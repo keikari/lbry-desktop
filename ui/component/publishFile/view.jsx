@@ -334,7 +334,7 @@ function PublishFile(props: Props) {
       className={disabled || balance === 0 ? 'card--disabled' : ''}
       title={
         <div>
-          {__('Upload')}
+          {__('Upload') || header}
           {publishing && <Spinner type={'small'} />}
           {inProgress && (
             <div>
@@ -346,7 +346,7 @@ function PublishFile(props: Props) {
       subtitle={isStillEditing && __('You are currently editing your upload.')}
       actions={
         <React.Fragment>
-          <PublishName />
+          <PublishName uri={uri} />
 
           <FormField
             type="text"
@@ -359,6 +359,7 @@ function PublishFile(props: Props) {
           />
 
           <FileSelector
+            label={__('Video file')}
             disabled={disabled}
             currentPath={currentFile}
             onFileChosen={handleFileChange}
@@ -415,8 +416,6 @@ function PublishFile(props: Props) {
             </p>
           )}
           {/* @endif */}
-
-          <PublishName nameOnly autoPopulateName={autoPopulateName} setAutoPopulateName={setAutoPopulateName} />
         </React.Fragment>
       }
     />
