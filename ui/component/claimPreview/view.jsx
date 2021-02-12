@@ -1,4 +1,5 @@
 // @flow
+import { LIVE_STREAM_TAG, LIVE_STREAM_CHANNEL_CLAIM_ID } from 'constants/livestream';
 import type { Node } from 'react';
 import React, { useEffect, forwardRef } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
@@ -72,6 +73,7 @@ type Props = {
   hideRepostLabel?: boolean,
   repostUrl?: string,
   livestream?: boolean,
+  hideLivestreamClaims?: boolean,
 };
 
 const ClaimPreview = forwardRef<any, {}>((props: Props, ref: any) => {
@@ -122,6 +124,7 @@ const ClaimPreview = forwardRef<any, {}>((props: Props, ref: any) => {
     renderActions,
     // repostUrl,
     livestream,
+    hideLivestreamClaims,
   } = props;
   const WrapperElement = wrapperElement || 'li';
   const shouldFetch =
@@ -129,6 +132,13 @@ const ClaimPreview = forwardRef<any, {}>((props: Props, ref: any) => {
   const abandoned = !isResolvingUri && !claim;
   const shouldHideActions = hideActions || type === 'small' || type === 'tooltip';
   const canonicalUrl = claim && claim.canonical_url;
+  const isLivestream =
+    claim &&
+    claim.signing_channel &&
+    claim.signing_channel.claim_id === LIVE_STREAM_CHANNEL_CLAIM_ID &&
+    claim.value.tags &&
+    claim.value.tags.includes(LIVE_STREAM_TAG);
+
   let isValid = false;
   if (uri) {
     try {
@@ -228,7 +238,7 @@ const ClaimPreview = forwardRef<any, {}>((props: Props, ref: any) => {
     }
   }, [isValid, uri, isResolvingUri, shouldFetch, resolveUri]);
 
-  if (shouldHide && !showNullPlaceholder) {
+  if ((shouldHide && !showNullPlaceholder) || (isLivestream && hideLivestreamClaims)) {
     return null;
   }
 
