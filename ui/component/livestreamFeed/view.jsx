@@ -22,7 +22,11 @@ export default function LivestreamFeed(props: Props) {
       <div className="section card-stack">
         <div className="file-render file-render--video livestream">
           <div className="file-viewer">
-            <iframe src={`${BITWAVE_EMBED_URL}/${BITWAVE_USERNAME}?skin=odysee&autoplay=1`} scrolling="no" />
+            <iframe
+              src={`${BITWAVE_EMBED_URL}/${BITWAVE_USERNAME}?skin=odysee&autoplay=1`}
+              scrolling="no"
+              allowFullScreen
+            />
           </div>
         </div>
 
