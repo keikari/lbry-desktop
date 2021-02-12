@@ -157,7 +157,7 @@ export function CommentCreate(props: Props) {
       })}
     >
       <FormField
-        disabled={!activeChannelClaim}
+        disabled={!activeChannelClaim || livestream}
         type={SIMPLE_SITE ? 'textarea' : advancedEditor && !isReply ? 'markdown' : 'textarea'}
         name={isReply ? 'content_reply' : 'content_description'}
         label={
@@ -179,7 +179,7 @@ export function CommentCreate(props: Props) {
         autoFocus={isReply}
         textAreaMaxLength={livestream ? FF_MAX_CHARS_IN_LIVESTREAM_COMMENT : FF_MAX_CHARS_IN_COMMENT}
       />
-      {livestream && hasChannels && !embed && (
+      {livestream && hasChannels && !embed && false && (
         <div className="livestream__emoji-actions">
           {LIVESTREAM_EMOJIS.map((emoji) => (
             <Button
@@ -204,7 +204,7 @@ export function CommentCreate(props: Props) {
         <Button
           ref={buttonref}
           button="primary"
-          disabled={disabled}
+          disabled={disabled || livestream}
           type="submit"
           label={
             isReply
