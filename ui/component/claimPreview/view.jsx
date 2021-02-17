@@ -6,7 +6,9 @@ import { useImage } from 'react-image';
 import classnames from 'classnames';
 import { CHANNEL_THUMBNAIL_FALLBACK, STREAM_THUMBNAIL_FALLBACK, SIMPLE_SITE } from 'config';
 import { parseURI } from 'lbry-redux';
+// @if TARGET='app'
 import { openClaimPreviewMenu } from 'util/context-menu';
+// @endif
 import { formatLbryUrlForWeb } from 'util/url';
 import { isEmpty } from 'util/object';
 import FileThumbnail from 'component/fileThumbnail';
