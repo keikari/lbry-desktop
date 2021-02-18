@@ -438,13 +438,6 @@ export default React.memo<Props>(function VideoJs(props: Props) {
   useEffect(() => {
     // For some reason the video player is responsible for detecting content type this way
     fetch(source, { method: 'HEAD', cache: 'no-store' }).then(response => {
-      let player = playerRef.current;
-
-      if (player) {
-        // player.dispose();
-        window.playerDom.remove();
-      }
-
       const vjsElement = createVideoPlayerDOM(containerRef.current);
       window.playerDom = vjsElement;
 
@@ -456,7 +449,7 @@ export default React.memo<Props>(function VideoJs(props: Props) {
       // Set reference in component state
       playerRef.current = vjsPlayer;
 
-      player = vjsPlayer;
+      const player = vjsPlayer;
 
       // Add event listener for keyboard shortcuts
       window.addEventListener('keydown', handleKeyDown);
@@ -465,10 +458,10 @@ export default React.memo<Props>(function VideoJs(props: Props) {
 
       // override type if we receive an .m3u8 (transcoded mp4)
       if (
-        response
-        && response.redirected
-        && response.url
-        && response.url.endsWith('m3u8')
+        response &&
+        response.redirected &&
+        response.url &&
+        response.url.endsWith('m3u8')
         ) {
         type = 'application/x-mpegURL';
       }
@@ -491,6 +484,7 @@ export default React.memo<Props>(function VideoJs(props: Props) {
         player.dispose();
         window.player = undefined;
       }
+      window.playerDom.remove();
     };
   }, [source, reload]);
 
