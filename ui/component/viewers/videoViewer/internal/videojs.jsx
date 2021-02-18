@@ -72,7 +72,7 @@ const VIDEO_JS_OPTIONS: VideoJSOptions = {
   controls: true,
   html5: {
     nativeControlsForTouch: IS_IOS,
-    hls: {
+    vhs: {
       overrideNative: !videojs.browser.IS_ANY_SAFARI,
     },
   },
@@ -168,18 +168,25 @@ export default React.memo<Props>(function VideoJs(props: Props) {
     ...VIDEO_JS_OPTIONS,
     autoplay: autoplay,
     muted: startMuted,
+    // sources: [{}],
     sources: [
       {
         src: source,
         type: sourceType,
+
+        // src: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
+        // type: 'application/x-mpegURL',
       },
     ],
     poster: poster, // thumb looks bad in app, and if autoplay, flashing poster is annoying
     plugins: {
+      qualityLevels: {},
       eventTracking: true,
       overlay: OVERLAY.OVERLAY_DATA,
     },
   };
+
+  console.log(`Source: `, source);
 
   const tapToUnmuteRef = useRef();
   const tapToRetryRef = useRef();
@@ -374,18 +381,24 @@ export default React.memo<Props>(function VideoJs(props: Props) {
       player.on('ended', onEnded);
 
       // Replace volume bar with custom LBRY volume bar
-      LbryVolumeBarClass.replaceExisting(player);
+      // LbryVolumeBarClass.replaceExisting(player);
 
       // initialize mobile UI
       player.mobileUi(); // Inits mobile version. No-op if Desktop.
 
       // Add quality selector to player
+      /*player.qualityLevels();
       player.hlsQualitySelector({
         displayCurrentQuality: true,
-      });
+      });*/
 
       // I think this is a callback function
-      onPlayerReady(player);
+      player.ready(() => onPlayerReady(player));
+    });
+
+    vjs.qualityLevels();
+    vjs.hlsQualitySelector({
+      displayCurrentQuality: true,
     });
 
     // fixes #3498 (https://github.com/lbryio/lbry-desktop/issues/3498)
@@ -396,7 +409,7 @@ export default React.memo<Props>(function VideoJs(props: Props) {
   }
 
   // This lifecycle hook is only called once (on mount)
-  useEffect(() => {
+/*  useEffect(() => {
     const vjsElement = createVideoPlayerDOM(containerRef.current);
     const vjsPlayer = initializeVideoPlayer(vjsElement);
 
@@ -419,22 +432,44 @@ export default React.memo<Props>(function VideoJs(props: Props) {
         player.dispose();
       }
     };
-  }, []);
+  }, []);*/
 
   // Update video player and reload when source URL changes
   useEffect(() => {
     // For some reason the video player is responsible for detecting content type this way
-    fetch(source, { method: 'HEAD', cache: 'no-store' }).then((response) => {
-      const player = playerRef.current;
+    fetch(source, { method: 'HEAD', cache: 'no-store' }).then(response => {
+      let player = playerRef.current;
 
-      if (!player) {
-        return;
+      if (player) {
+        // player.dispose();
+        window.playerDom.remove();
       }
+
+      const vjsElement = createVideoPlayerDOM(containerRef.current);
+      window.playerDom = vjsElement;
+
+      const vjsPlayer = initializeVideoPlayer(vjsElement);
+
+      // Add reference to player to global scope
+      window.player = vjsPlayer;
+
+      // Set reference in component state
+      playerRef.current = vjsPlayer;
+
+      player = vjsPlayer;
+
+      // Add event listener for keyboard shortcuts
+      window.addEventListener('keydown', handleKeyDown);
 
       let type = sourceType;
 
       // override type if we receive an .m3u8 (transcoded mp4)
-      if (response && response.redirected && response.url && response.url.endsWith('m3u8')) {
+      if (
+        response
+        && response.redirected
+        && response.url
+        && response.url.endsWith('m3u8')
+        ) {
         type = 'application/x-mpegURL';
       }
 
@@ -448,6 +483,15 @@ export default React.memo<Props>(function VideoJs(props: Props) {
         type: type,
       });
     });
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      const player = playerRef.current;
+      if ( player ) {
+        player.dispose();
+        window.player = undefined;
+      }
+    };
   }, [source, reload]);
 
   return (
