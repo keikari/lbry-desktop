@@ -104,13 +104,7 @@
     height: var(--height-button);
     width: var(--height-button);
     margin-right: 0;
-    transition: border-radius var(--animation-duration);
-    border-radius: calc(var(--height-button) / 2);
-
-    img {
-      transition: border-radius var(--animation-duration);
-      border-radius: calc(var(--height-button) / 2);
-    }
+    border-radius: var(--border-radius);
   }
 
   &:hover {
@@ -127,9 +121,14 @@
 }
 
 .header__navigation-item--balance {
-  @extend .button--link;
+  @extend .button--file-action;
   margin-left: var(--spacing-m);
   color: var(--color-text);
+  margin-right: var(--spacing-m);
+
+  &:hover {
+    color: var(--color-text);
+  }
 }
 
 .header__navigation-item--forward {
@@ -156,12 +155,6 @@
     .button__label {
       display: none;
     }
-  }
-}
-
-.header__odysee {
-  &:hover {
-    filter: drop-shadow(1px 2px 10px var(--color-gray-3));
   }
 }
 

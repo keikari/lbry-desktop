@@ -221,6 +221,7 @@
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
+    align-items: center;
   }
 
   @media (max-width: $breakpoint-xsmall) {
@@ -262,10 +263,6 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-
-  @media (max-width: $breakpoint-small) {
-    margin-bottom: var(--spacing-s);
-  }
 }
 
 .claim-preview-info {

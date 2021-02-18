@@ -64,6 +64,12 @@ $thumbnailWidthSmall: 1rem;
         margin-left: 0;
       }
     }
+
+    .channel-staked__indicator {
+      @media (max-width: $breakpoint-small) {
+        margin-left: 0.1rem;
+      }
+    }
   }
 }
 

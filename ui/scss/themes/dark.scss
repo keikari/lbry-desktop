@@ -109,10 +109,11 @@
   --color-wunderbar: #89939e;
 
   // Tags
-  --color-tag: var(--color-primary);
-  --color-tag-bg: var(--color-primary-alt);
+  --color-tag: #ff85b1;
+  --color-tag-bg: var(--color-navigation-hover);
   --color-tag-hover: var(--color-white);
   --color-tag-bg-hover: var(--color-primary-alt-2);
+  --color-tag-mature-bg: var(--color-primary-alt-2);
 
   // Editor
   --color-editor-cursor: var(--color-text);
